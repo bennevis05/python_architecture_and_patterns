@@ -8,6 +8,7 @@ class Application:
         :param environ: словарь данных от сервера
         :param start_response: функция для ответа серверу
         """
+
         url = environ['PATH_INFO']
 
         for middleware in self.middlewares:
@@ -16,7 +17,7 @@ class Application:
         if url in self.urls:
             view = self.urls[url]
 
-            code_response, body_response = view()
+            code_response, body_response = view(environ)
             start_response(code_response, [('Content-Type', 'text/html')])
             return [body_response.encode('utf-8')]
         else:
