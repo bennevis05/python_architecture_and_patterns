@@ -9,3 +9,13 @@ def render(template_name, template_folder='templates', **kwargs):
     with open(template_path, encoding='utf-8') as f:
         template = Template(f.read())
     return template.render(**kwargs)
+
+
+def parsing_data(data):
+    """Парсинг данных"""
+    result = {}
+    if data:
+        for item in data.split('&'):
+            key, value = item.split('=')
+            result[key] = value
+    return result
