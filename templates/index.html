@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Main</title>
-</head>
-<body>
-    <h1>Programming language</h1>
-    <ul>
-        {% for lang in language_list %}
-            <li>{{lang.name}}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Main Page{% endblock %}
+
+{% block main %}
+    <div class="content">
+        <hr>
+        <h1>Интернет магазин &laquo;Технотрейд&raquo;</h1>
+        <h3>Добро пожаловать в интернет магазин &laquo;Технотрейд&raquo;!</h3>
+        <p>&laquo;Технотрейд&raquo; - интернет магазин цифровой электроники и бытовой техники.<br>У нас лучшие цены и ассортимент на электронику и бытовую технику!</p>
+    </div>
+{% endblock %}
