@@ -1,4 +1,4 @@
 # python_architecture_and_patterns
 
-Для запуска wsgi (запуск на http://127.0.0.1:8000/):
+To run wsgi (launch on http://127.0.0.1:8000/):
 gunicorn manage:application

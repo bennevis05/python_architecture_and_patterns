@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Courses Page{% endblock %}
+
+{% block main %}
+    <div class="content">
+        <h4>Доступные курсы</h4>
+        {% for item in all_courses %}
+            <li>{{item.name}} (Категория: {{item.category}}, Формат: {{item.course_type}})</li>
+        {% endfor %}
+        <form method="post" class="form-inline">
+            <div class="form-group mb-2">
+                <p style="margin-top: 15px;">Создать новый курс:</p>
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <input type="text"  name="course_name" class="form-control" id="inputText" placeholder="Введите название">
+            </div>
+            <select class="custom-select" name="category_name" style="margin-right: 10px; margin-bottom: 10px;">
+                <option selected>Выберите категорию</option>
+                {% for item in all_categories %}
+                    <option value={{item.name}}>{{item.name}}</option>
+                {% endfor %}
+            </select>
+            <select class="custom-select" name="course_format" style="margin-right: 10px; margin-bottom: 10px;">
+                <option selected>Выберите формат</option>
+                <option value="Online">Online</option>
+                <option value="Offline">Offline</option>
+            </select>
+            <button type="submit" class="btn btn-primary mb-2">Подтвердить</button>
+        </form>
+    </div>
+{% endblock %}
