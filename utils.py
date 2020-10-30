@@ -1,5 +1,6 @@
 from jinja2 import Template, FileSystemLoader
 from jinja2.environment import Environment
+import time
 
 
 def render(template_name, templates_folder='templates', **kwargs):
@@ -18,5 +19,15 @@ def parsing_data(data):
     if data:
         for item in data.split('&'):
             key, value = item.split('=')
-            result[key] = value
+            result[key] = value.replace('+', ' ')
     return result
+
+
+def debug(func):
+    """Decorator"""
+    def wrap(*args, **kwargs):
+        res = func(*args, **kwargs)
+        print(f'Function name: {func.__name__}')
+        print(f'Function call time: {time.ctime(time.time())}')
+        return res
+    return wrap

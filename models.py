@@ -13,3 +13,9 @@ class LearningPortal:
     @staticmethod
     def create_course(name, category, course_type):
         return CourseFactory.create_course(name, category, course_type)
+
+    def get_category(self, name):
+        for elem in self.all_categories:
+            if name == elem.get_category_name():
+                return elem
+        return None
