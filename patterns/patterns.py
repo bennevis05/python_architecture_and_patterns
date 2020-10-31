@@ -13,6 +13,12 @@ class AbstractCourse(metaclass=ABCMeta):
         pass
 
 
+class AbstractUser(metaclass=ABCMeta):
+    @abstractmethod
+    def full_name(self):
+        pass
+
+
 class Composite(metaclass=ABCMeta):
     @abstractmethod
     def get_total_amount(self):
@@ -20,6 +26,26 @@ class Composite(metaclass=ABCMeta):
 
     @abstractmethod
     def get_total_price(self):
+        pass
+
+
+class Subject(metaclass=ABCMeta):
+    @abstractmethod
+    def attach(self, observer):
+        pass
+
+    @abstractmethod
+    def detach(self, observer):
+        pass
+
+    @abstractmethod
+    def notify(self):
+        pass
+
+
+class Observer(metaclass=ABCMeta):
+    @abstractmethod
+    def send_notification(self, course):
         pass
 
 
@@ -47,11 +73,13 @@ class Category(AbstractCategory, Composite):
         return total_price
 
 
-class Course(AbstractCourse, Composite):
+class Course(AbstractCourse, Composite, Subject):
     def __init__(self, name, category):
         self.name = name
         self.category = category
         self.price = 10000
+        self.course_type = None
+        self.all_observers = []
 
     def get_course_name(self):
         return self.name
@@ -61,6 +89,28 @@ class Course(AbstractCourse, Composite):
 
     def get_total_price(self):
         return self.price
+
+    def set_name(self, new_name):
+        self.name = new_name
+
+    def set_category(self, new_category):
+        self.category = new_category
+
+    def set_price(self, new_price):
+        self.price = new_price
+
+    def set_type(self, new_type):
+        self.course_type = new_type
+
+    def attach(self, observer):
+        self.all_observers.append(observer)
+
+    def detach(self, observer):
+        self.all_observers.remove(observer)
+
+    def notify(self):
+        for observer in self.all_observers:
+            observer.send_notification(self)
 
 
 class OnlineCourse(Course):
@@ -84,3 +134,22 @@ class CourseFactory:
     @classmethod
     def create_course(cls, name, category, type_course):
         return cls.course_type[type_course](name, category, type_course)
+
+
+class Student(AbstractUser, Observer):
+    def __init__(self, name, surname, email, city, state):
+        self.name = name
+        self.surname = surname
+        self.email = email
+        self.city = city
+        self.state = state
+        self.course_list = []
+
+    def full_name(self):
+        return f'{self.name} {self.surname}'
+
+    def send_notification(self, course):
+        print(f'Добрый день, {self.full_name()}! '
+              f'На одном из ваших курсов произошли изменения:')
+        print(f'{course.name}\n{course.category}\n{course.price}\n'
+              f'{course.course_type}')

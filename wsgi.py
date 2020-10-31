@@ -17,9 +17,15 @@ class Application:
         if url in self.urls:
             view = self.urls[url]
 
-            code_response, body_response = view(environ)
-            start_response(code_response, [('Content-Type', 'text/html')])
-            return [body_response.encode('utf-8')]
+            try:
+                code_response, body_response = view(environ)
+                start_response(code_response, [('Content-Type', 'text/html')])
+                return [body_response.encode('utf-8')]
+            except ValueError:
+                view = self.urls['/']
+                code_response, body_response = view(environ)
+                start_response(code_response, [('Content-Type', 'text/html')])
+                return [body_response.encode('utf-8')]
         else:
             start_response('404 Not Found', [('Content-Type', 'text/html')])
             return [b"PAGE NOT FOUND"]

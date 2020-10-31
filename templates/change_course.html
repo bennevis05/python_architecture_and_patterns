@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Change Course Page{% endblock %}
+
+{% block main %}
+<div class="content">
+    <form action="/change_course_confirm/" method="post" class="">
+        <li>Наименование курса: <input type="text" readonly name="course_name" value="{{ course_to_change.name }}" style="width: 377px; border: none;"></li>
+        <li>Категория курса: <input type="text" readonly value="{{ course_to_change.category }}" style="width: 377px; border: none;"></li>
+        <li>Стоимость курса: <input type="text" readonly value="{{ course_to_change.price }}" style="width: 377px; border: none;"></li>
+        <li>Вид курса: <input type="text" readonly value="{{ course_to_change.course_type }}" style="width: 377px; border: none;"></li>
+
+        <div class="form-group mb-2">
+            <p style="margin-top: 12px;"><b>Изменить данные курса:</b></p>
+        </div>
+        <div class="form-group col-md-6">
+            <input type="text" name="course_new_name" class="form-control" placeholder="Введите название">
+        </div>
+        <select class="custom-select col-md-6" name="category_name" style="margin-bottom: 15px; margin-left: 14px; width: 526px;">
+            <option selected>Выберите категорию</option>
+            {% for item in all_categories %}
+                <option value='{{ item.name }}'>{{ item.name }}</option>
+            {% endfor %}
+        </select>
+        <div class="form-group col-md-6">
+            <input type="text" name="course_price" class="form-control" placeholder="Введите стоимость">
+        </div>
+        <select class="custom-select col-md-6" name="course_format" style="margin-right: 10px; margin-bottom: 15px; margin-left: 14px; width: 526px;">
+            <option selected>Выберите формат</option>
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+        </select><br>
+        <button type="submit" class="btn btn-primary mb-2" style="margin-left: 13px;">Подтвердить</button>
+    </form>
+</div>
+{% endblock %}

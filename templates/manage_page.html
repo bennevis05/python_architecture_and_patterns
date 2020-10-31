@@ -2,42 +2,97 @@
 {% block title %}Manage Page{% endblock %}
 
 {% block main %}
-    <div class="content">
-        <form action="/add_category/" method="post" class="form-inline">
-            <div class="form-group mb-2">
-                <p style="margin-top: 15px;">Создать новую категорию:</p>
-            </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <input type="text" name="category_name" class="form-control" placeholder="Введите название">
-            </div>
-            <select class="custom-select" name="sup_category_name" style="margin-right: 10px; margin-bottom: 10px;">
-                <option selected>Выберите подкатегорию</option>
-                {% for item in all_categories %}
-                    <option value='{{ item.name }}'>{{ item.name }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-primary mb-2">Подтвердить</button>
-        </form>
+<div class="content">
+    <form action="/add_category/" method="post" class="form-inline">
+        <div class="form-group mb-2">
+            <p style="margin-top: 15px;"><b>Создать новую категорию:</b></p>
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <input type="text" name="category_name" class="form-control" placeholder="Введите название">
+        </div>
+        <select class="custom-select" name="sup_category_name" style="margin-right: 10px; margin-bottom: 10px;">
+            <option selected>Выберите подкатегорию</option>
+            {% for item in all_categories %}
+                <option value='{{ item.name }}'>{{ item.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary mb-2">Подтвердить</button>
+    </form>
 
-        <form action="/add_course/" method="post" class="form-inline">
-            <div class="form-group mb-2">
-                <p style="margin-top: 15px;">Создать новый курс:</p>
+    <form action="/add_course/" method="post" class="form-inline">
+        <div class="form-group mb-2">
+            <p style="margin-right: 47px;"><b>Создать новый курс:</b></p>
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <input type="text" name="course_name" class="form-control" placeholder="Введите название">
+        </div>
+        <select class="custom-select" name="category_name" style="margin-right: 10px; margin-bottom: 10px; padding-right: 56px;">
+            <option selected>Выберите категорию</option>
+            {% for item in all_categories %}
+                <option value='{{ item.name }}'>{{ item.name }}</option>
+            {% endfor %}
+        </select>
+        <select class="custom-select" name="course_format" style="margin-right: 10px; margin-bottom: 10px;">
+            <option selected>Выберите формат</option>
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+        </select>
+        <button type="submit" class="btn btn-primary mb-2">Подтвердить</button>
+    </form>
+    <hr>
+
+    <p><b>Создать нового пользователя:</b></p>
+    <form action="/add_user/" method="post">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputName">Имя</label>
+                <input type="text" class="form-control" name="user_name" id="inputName" placeholder="Введите имя">
             </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <input type="text"  name="course_name" class="form-control" placeholder="Введите название">
+            <div class="form-group col-md-6">
+                <label for="inputSurname">Фамилия</label>
+                <input type="text" class="form-control" name="user_surname" id="inputSurname" placeholder="Введите фамилию">
             </div>
-            <select class="custom-select" name="category_name" style="margin-right: 10px; margin-bottom: 10px;">
-                <option selected>Выберите категорию</option>
-                {% for item in all_categories %}
-                    <option value='{{ item.name }}'>{{ item.name }}</option>
-                {% endfor %}
-            </select>
-            <select class="custom-select" name="course_format" style="margin-right: 10px; margin-bottom: 10px;">
-                <option selected>Выберите формат</option>
-                <option value="Online">Online</option>
-                <option value="Offline">Offline</option>
-            </select>
-            <button type="submit" class="btn btn-primary mb-2">Подтвердить</button>
-        </form>
-    </div>
+        </div>
+        <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input type="email" class="form-control" name="user_email" id="inputEmail" placeholder="Электронная почта">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputCity">Город</label>
+                <input type="text" class="form-control" name="user_city" id="inputCity">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputState">Регион</label>
+                <input type="text" class="form-control" name="user_state" id="inputState">
+            </div>
+            <div class="form-group col-md-12">
+                <label for="inputCourse">Запись на курс</label><br>
+                <select class="custom-select col-md-6" name="user_course" id="inputCourse">
+                    <option selected>Выберите курс</option>
+                    {% for item in all_courses %}
+                        <option value='{{ item.name }}'>
+                            {{ item.name }} (Категория: {{ item.category }}, Формат: {{ item.course_type }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Подтвердить</button>
+    </form>
+    <hr>
+
+    <p><b>Изменить данные курса:</b></p>
+    <form action="/change_course/" method="post">
+        <select class="custom-select col-md-6" name="course_name">
+            <option selected>Выберите курс</option>
+            {% for item in all_courses %}
+                <option value='{{ item.name }}'>
+                    {{ item.name }} (Категория: {{ item.category }}, Формат: {{ item.course_type }})
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Изменить курс</button>
+    </form>
+</div>
 {% endblock %}
