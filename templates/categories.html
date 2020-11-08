@@ -6,7 +6,7 @@
         <h4>Категории</h4>
         {% for item in all_categories %}
             <li>
-                {{ item.name }}.
+                {{ item[0] }}.
                 Общее количество курсов: {{ item.get_total_amount() }}.
                 Общая стоимость всех курсов: {{ item.get_total_price() }}.
             </li>

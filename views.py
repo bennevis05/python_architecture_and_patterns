@@ -1,10 +1,11 @@
 from utils import render, parsing_data, debug
-from models import LearningPortal
+from models import LearningPortal, UnitOfWork, CategoryMapper, CourseMapper
 
 from urllib.parse import unquote
 import json
+import sqlite3
 
-
+connection = sqlite3.connect('portal_database.sqlite')
 portal = LearningPortal()
 
 
@@ -30,29 +31,50 @@ def add_category_view(request):
         sup_category_name = data['sup_category_name']
 
         if sup_category_name == 'Выберите подкатегорию':
+
+            # con = sqlite3.connect('portal_db.sqlite')
+            # cursor = con.cursor()
+            # cursor.execute("INSERT INTO categories VALUES (?)", (category_name,))
+            # con.commit()
+            # con.close()
+
+            UnitOfWork.new_current()
             new_category = portal.create_category(category_name)
+            new_category.mark_new()
+            UnitOfWork.get_current().commit()
+
             portal.all_categories.append(new_category)
         else:
             new_category = portal.create_category(category_name)
             portal.all_categories.append(new_category)
             portal.get_category(sup_category_name).add(new_category)
 
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
+
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content, template_name='manage_page.html')
     else:
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
+
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content, template_name='manage_page.html')
 
 
 def courses_view(request):
-    return '200 OK', render(template_name='courses.html',
-                            all_courses=portal.all_courses)
+    all_courses = CourseMapper(connection).read()
+
+    page_content = {
+        'all_courses': all_courses
+    }
+    return '200 OK', render(**page_content, template_name='courses.html')
 
 
 def add_course_view(request):
@@ -63,22 +85,33 @@ def add_course_view(request):
 
         course_name = data['course_name']
         category_name = data['category_name']
+        course_price = data['course_price']
         course_format = data['course_format']
 
+        UnitOfWork.new_current()
         new_course = portal.create_course(course_name, category_name,
-                                          course_format)
+                                          course_price, course_format)
+        new_course.mark_new()
+        UnitOfWork.get_current().commit()
+
         portal.all_courses.append(new_course)
         portal.get_category(category_name).add(new_course)
 
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
+
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content, template_name='manage_page.html')
     else:
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
+
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content, template_name='manage_page.html')
 
@@ -96,28 +129,38 @@ def add_user_view(request):
         user_state = data['user_state']
         user_course_name = data['user_course']
 
+        UnitOfWork.new_current()
         new_user = portal.create_user(user_name, user_surname, user_email,
                                       user_city, user_state)
+        new_user.mark_new()
+        UnitOfWork.get_current().commit()
+
         user_course = portal.get_course(user_course_name)
         new_user.course_list.append(user_course)
-        user_course.attach(new_user)
+        # user_course.attach(new_user)
 
         portal.all_students.append(new_user)
 
-        for student in portal.all_students:
-            print(student.full_name())
-            for course in student.course_list:
-                print(f'----{course.get_course_name()}')
+        # for student in portal.all_students:
+        #     print(student.full_name())
+        #     for course in student.course_list:
+        #         print(f'----{course.get_course_name()}')
+
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
 
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content, template_name='manage_page.html')
     else:
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
+
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content, template_name='manage_page.html')
 
@@ -138,9 +181,18 @@ def contact_view(request):
 
 
 def manage_page_view(request):
+    # con = sqlite3.connect('portal_db.sqlite')
+    # cursor = con.cursor()
+    # cursor.execute("SELECT * FROM categories")
+    # all_categories = cursor.fetchall()
+    # con.close()
+
+    all_categories = CategoryMapper(connection).read()
+    all_courses = CourseMapper(connection).read()
+
     page_content = {
-        'all_categories': portal.all_categories,
-        'all_courses': portal.all_courses
+        'all_categories': all_categories,
+        'all_courses': all_courses
     }
     return '200 OK', render(**page_content, template_name='manage_page.html')
 
@@ -153,17 +205,21 @@ def change_course(request):
 
         course_name = data['course_name']
         course_to_change = portal.get_course(course_name)
+        all_categories = CategoryMapper(connection).read()
 
         page_content = {
-            'all_categories': portal.all_categories,
+            'all_categories': all_categories,
             'course_to_change': course_to_change
         }
         return '200 OK', render(**page_content,
                                 template_name='change_course.html')
     else:
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
+
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content, template_name='manage_page.html')
 
@@ -193,17 +249,22 @@ def change_course_confirm(request):
             course_to_change.set_type(course_format)
 
         course_to_change.notify()
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
 
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content,
                                 template_name='manage_page.html')
     else:
+        all_categories = CategoryMapper(connection).read()
+        all_courses = CourseMapper(connection).read()
+
         page_content = {
-            'all_categories': portal.all_categories,
-            'all_courses': portal.all_courses
+            'all_categories': all_categories,
+            'all_courses': all_courses
         }
         return '200 OK', render(**page_content,
                                 template_name='manage_page.html')

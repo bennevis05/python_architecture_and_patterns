@@ -12,8 +12,8 @@
         </div>
         <select class="custom-select" name="sup_category_name" style="margin-right: 10px; margin-bottom: 10px;">
             <option selected>Выберите подкатегорию</option>
-            {% for item in all_categories %}
-                <option value='{{ item.name }}'>{{ item.name }}</option>
+            {% for category in all_categories %}
+                <option value='{{ category.name }}'>{{ category.name }}</option>
             {% endfor %}
         </select>
         <button type="submit" class="btn btn-primary mb-2">Подтвердить</button>
@@ -26,12 +26,15 @@
         <div class="form-group mx-sm-3 mb-2">
             <input type="text" name="course_name" class="form-control" placeholder="Введите название">
         </div>
-        <select class="custom-select" name="category_name" style="margin-right: 10px; margin-bottom: 10px; padding-right: 56px;">
+        <select class="custom-select" name="category_name" style="margin-bottom: 10px; padding-right: 56px;">
             <option selected>Выберите категорию</option>
-            {% for item in all_categories %}
-                <option value='{{ item.name }}'>{{ item.name }}</option>
+            {% for category in all_categories %}
+                <option value='{{ category.name }}'>{{ category.name }}</option>
             {% endfor %}
         </select>
+        <div class="form-group mx-sm-3 mb-2">
+            <input type="text" name="course_price" class="form-control" placeholder="Стоимость" style="width: 105px; margin-left: -6px;">
+        </div>
         <select class="custom-select" name="course_format" style="margin-right: 10px; margin-bottom: 10px;">
             <option selected>Выберите формат</option>
             <option value="Online">Online</option>
@@ -70,9 +73,9 @@
                 <label for="inputCourse">Запись на курс</label><br>
                 <select class="custom-select col-md-6" name="user_course" id="inputCourse">
                     <option selected>Выберите курс</option>
-                    {% for item in all_courses %}
-                        <option value='{{ item.name }}'>
-                            {{ item.name }} (Категория: {{ item.category }}, Формат: {{ item.course_type }})
+                    {% for course in all_courses %}
+                        <option value='{{ course.name }}'>
+                            {{ course.name }} (Категория: {{ course.category }}, Формат: {{ course.course_type }})
                         </option>
                     {% endfor %}
                 </select>
@@ -86,9 +89,9 @@
     <form action="/change_course/" method="post">
         <select class="custom-select col-md-6" name="course_name">
             <option selected>Выберите курс</option>
-            {% for item in all_courses %}
-                <option value='{{ item.name }}'>
-                    {{ item.name }} (Категория: {{ item.category }}, Формат: {{ item.course_type }})
+            {% for course in all_courses %}
+                <option value='{{ course.name }}'>
+                    {{ course.name }} (Категория: {{ course.category }}, Формат: {{ course.course_type }})
                 </option>
             {% endfor %}
         </select>

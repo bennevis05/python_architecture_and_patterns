@@ -5,7 +5,7 @@
     <div class="content">
         <h4>Доступные курсы</h4>
         {% for item in all_courses %}
-            <li>{{ item.name }} (Категория: {{ item.category }}, Формат: {{ item.course_type }})</li>
+            <li>{{ item[0] }} (Категория: {{ item[1] }}, Формат: {{ item[3] }})</li>
         {% endfor %}
     </div>
 {% endblock %}
