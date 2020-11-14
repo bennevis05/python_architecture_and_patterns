@@ -32,12 +32,6 @@ def add_category_view(request):
 
         if sup_category_name == 'Выберите подкатегорию':
 
-            # con = sqlite3.connect('portal_db.sqlite')
-            # cursor = con.cursor()
-            # cursor.execute("INSERT INTO categories VALUES (?)", (category_name,))
-            # con.commit()
-            # con.close()
-
             UnitOfWork.new_current()
             new_category = portal.create_category(category_name)
             new_category.mark_new()
@@ -85,7 +79,10 @@ def add_course_view(request):
 
         course_name = data['course_name']
         category_name = data['category_name']
-        course_price = data['course_price']
+        try:
+            course_price = int(data['course_price'])
+        except TypeError:
+            course_price = 0
         course_format = data['course_format']
 
         UnitOfWork.new_current()
@@ -181,11 +178,6 @@ def contact_view(request):
 
 
 def manage_page_view(request):
-    # con = sqlite3.connect('portal_db.sqlite')
-    # cursor = con.cursor()
-    # cursor.execute("SELECT * FROM categories")
-    # all_categories = cursor.fetchall()
-    # con.close()
 
     all_categories = CategoryMapper(connection).read()
     all_courses = CourseMapper(connection).read()

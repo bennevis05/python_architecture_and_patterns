@@ -26,8 +26,8 @@ def parsing_data(data):
 def debug(func):
     """Decorator"""
     def wrap(*args, **kwargs):
-        res = func(*args, **kwargs)
+        func_result = func(*args, **kwargs)
         print(f'Function name: {func.__name__}')
         print(f'Function call time: {time.ctime(time.time())}')
-        return res
+        return func_result
     return wrap

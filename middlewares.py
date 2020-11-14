@@ -1,6 +1,6 @@
 def check_slash_symbol(*args, **kwargs):
     """Проверяем последний символ в url на наличие косой черты"""
-    if kwargs['url'][-1] != '/':
+    if not kwargs['url'].endswith('/'):
         kwargs['url'] += '/'
     return kwargs['url']
 
