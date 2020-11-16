@@ -15,8 +15,9 @@ def main_view(request):
 
 
 def categories_view(request):
+    all_categories = CategoryMapper(connection).read()
     page_content = {
-        'all_categories': portal.all_categories
+        'all_categories': all_categories
     }
     return '200 OK', render(**page_content, template_name='categories.html')
 
